@@ -5,10 +5,10 @@ import connectDB from "./config/db.js";
 import toolRoutes from "./routes/tool.route.js";
 import userRoutes from "./routes/user.route.js";
 import adminRoutes from "./routes/admin.route.js";
+import serverless from "serverless-http";
 
 dotenv.config();
 
-// Connect to database
 connectDB();
 
 const app = express();
@@ -39,7 +39,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // Export for Vercel serverless functions
-export default app;
+export default serverless(app);
 
 // Only listen when not in serverless environment
 if (process.env.NODE_ENV !== "production") {
@@ -48,4 +48,3 @@ if (process.env.NODE_ENV !== "production") {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 }
-
