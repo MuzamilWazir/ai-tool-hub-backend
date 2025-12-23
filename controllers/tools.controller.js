@@ -165,14 +165,18 @@ const GetAllTools = async (req, res) => {
 
 const GetAllToolsActive = async (req, res) => {
   try {
-    const tools = await Tool.find();
-    const activeTools = tools.filter((item) => item.status === "Active");
+    // Query only active tools directly from database
+    const activeTools = await Tool.find({ status: "Active" })
+      .sort({ createdAt: -1 })
+      .limit(1000); // Safety limit
+
     return res.status(200).json({
       success: true,
       data: activeTools,
+      count: activeTools.length,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching active tools:", error);
     return res.status(500).json({
       success: false,
       message: "Error fetching tools",
