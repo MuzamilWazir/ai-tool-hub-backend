@@ -8,11 +8,17 @@ import adminRoutes from "./routes/admin.route.js";
 import serverless from "serverless-http";
 
 dotenv.config();
-
-connectDB();
-
 const app = express();
-const PORT = process.env.URL || 5000;
+// Connect to DB on first request only
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    res.status(500).json({ error: "Database connection failed" });
+  }
+});
 
 app.use(
   cors({
