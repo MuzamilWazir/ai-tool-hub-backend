@@ -10,15 +10,8 @@ import serverless from "serverless-http";
 dotenv.config();
 const app = express();
 // Connect to DB on first request only
-app.use(async (req, res, next) => {
-  try {
-   // await connectDB();
-    next();
-  } catch (error) {
-    console.error("Database connection failed:", error);
-    res.status(500).json({ error: "Database connection failed" });
-  }
-});
+
+await connectDB();
 
 app.use(
   cors({
@@ -34,9 +27,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(/.*/, (req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
 app.use("/api/Admin", adminRoutes);
 app.use("/api/tools", toolRoutes);
 
@@ -47,6 +37,9 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "Server is running" });
 });
 
+app.use(/.*/, (req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 // Export for Vercel serverless functions
 export default serverless(app);
 

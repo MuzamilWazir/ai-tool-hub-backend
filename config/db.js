@@ -1,17 +1,22 @@
-import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-dotenv.config();
+
+let isConnected = false;
 
 const connectDB = async () => {
+  if (isConnected) {
+    return;
+  }
+
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-      socketTimeoutMS: 45000,
+    const db = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
     });
-    console.log("Database connected successfully");
+
+    isConnected = db.connections[0].readyState === 1;
+    console.log("MongoDB connected");
   } catch (error) {
-    console.error("Database connection error:", error);
+    console.error("MongoDB connection failed:", error);
+    throw error;
   }
 };
 
