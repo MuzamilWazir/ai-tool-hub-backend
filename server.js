@@ -20,8 +20,6 @@ app.use(async (req, res, next) => {
   }
 });
 
-
-
 app.use(
   cors({
     origin: [
@@ -36,6 +34,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 app.use("/api/Admin", adminRoutes);
 app.use("/api/tools", toolRoutes);
 
