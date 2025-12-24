@@ -12,7 +12,7 @@ const app = express();
 // Connect to DB on first request only
 app.use(async (req, res, next) => {
   try {
-    await connectDB();
+   // await connectDB();
     next();
   } catch (error) {
     console.error("Database connection failed:", error);
